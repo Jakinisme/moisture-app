@@ -1,8 +1,8 @@
 import React from 'react';
+import styles from './Gauge.module.css';
 
 interface GaugeProps {
   value: number;
-  min?: number;
   max?: number;
   title?: string;
   size?: number;
@@ -10,7 +10,6 @@ interface GaugeProps {
 
 export const Gauge: React.FC<GaugeProps> = ({ 
   value, 
-  min = 0, 
   max = 70, 
   title = "Current Moisture Level",
   size = 200 
@@ -37,11 +36,11 @@ export const Gauge: React.FC<GaugeProps> = ({
   };
 
   return (
-    <div className="soil-moisture-gauge">
-      <h3 className="soil-moisture-gauge-title">{title}</h3>
+    <div className={styles.gauge}>
+      <h3 className={styles.title}>{title}</h3>
       
       <div style={{ position: 'relative', width: size, height: size }}>
-        <svg width={size} height={size} className="soil-moisture-gauge-svg">
+        <svg width={size} height={size} className={styles.svg}>
           <circle
             stroke="#e5e7eb"
             fill="transparent"
@@ -64,16 +63,11 @@ export const Gauge: React.FC<GaugeProps> = ({
           />
         </svg>
         
-        <div className="soil-moisture-gauge-center">
-          <div className="soil-moisture-gauge-value">{value}</div>
-          <div className="soil-moisture-gauge-unit">%</div>
-          <div className="soil-moisture-gauge-status">{getStatus(value)}</div>
+        <div className={styles.center}>
+          <div className={styles.value}>{value}</div>
+          <div className={styles.unit}>%</div>
+          <div className={styles.status}>{getStatus(value)}</div>
         </div>
-      </div>
-      
-      <div className="soil-moisture-gauge-range">
-        <span>{min}%</span>
-        <span>{max}%</span>
       </div>
     </div>
   );

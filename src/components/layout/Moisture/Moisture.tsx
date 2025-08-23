@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Graph } from '../../ui/Graph';
-import { Gauge } from '../../ui/Gauge';
+import Graph from '../../ui/Graph';
+import Gauge from '../../ui/Gauge';
+import styles from './Moisture.module.css';
 
 interface MoistureDataPoint {
   timestamp: string;
@@ -42,17 +43,22 @@ export const SoilMoistureChecker: React.FC = () => {
   }, [timeString]);
 
   const getStatusClass = (moisture: number) => {
-    if (moisture < 20) return 'very-dry';
-    if (moisture < 40) return 'dry';
-    if (moisture < 60) return 'good';
-    return 'wet';
+    if (moisture < 20) return styles.statusBadgeVeryDry;
+    if (moisture < 40) return styles.statusBadgeDry;
+    if (moisture < 60) return styles.statusBadgeGood;
+    return styles.statusBadgeWet;
   };
 
   return (
-    <div className="soil-moisture-container">
-      <div className="soil-moisture-content">
-        <div className="soil-moisture-grid">
-          <div className="soil-moisture-gauge-container">
+    <div className={styles.container}>
+      <div className={styles.content}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Monitor Kelembapan Tanah</h1>
+          <p className={styles.subtitle}>Memantau kelembapan tanah secara real-time</p>
+        </div>
+        
+        <div className={styles.grid}>
+          <div className={styles.gaugeContainer}>
             <Gauge 
               value={currentMoisture}
               title="Kelembapan Saat Ini"
@@ -60,26 +66,26 @@ export const SoilMoistureChecker: React.FC = () => {
             />
           </div>
 
-          <div className="soil-moisture-status-card">
-            <h3 className="soil-moisture-status-title">
+          <div className={styles.statusCard}>
+            <h3 className={styles.statusTitle}>
               Status Kelembapan
             </h3>
             <div>
-              <div className="soil-moisture-status-item">
-                <span className="soil-moisture-status-label">Kelembapan Saat Ini:</span>
-                <span className="soil-moisture-status-value">{currentMoisture}%</span>
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>Kelembapan Saat Ini:</span>
+                <span className={styles.statusValue}>{currentMoisture}%</span>
               </div>
-              <div className="soil-moisture-status-item">
-                <span className="soil-moisture-status-label">Status Kelembapan:</span>
-                <span className={`soil-moisture-status-badge ${getStatusClass(currentMoisture)}`}>
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>Status Kelembapan:</span>
+                <span className={`${styles.statusBadge} ${getStatusClass(currentMoisture)}`}>
                   {currentMoisture < 20 ? 'Sangat Kering' :
                    currentMoisture < 40 ? 'Kering' :
                    currentMoisture < 60 ? 'Baik' : 'lembab'}
                 </span>
               </div>
-              <div className="soil-moisture-status-item">
-                <span className="soil-moisture-status-label">Terakhir Diperbarui:</span>
-                <span className="soil-moisture-timestamp">
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>Terakhir Diperbarui:</span>
+                <span className={styles.timestamp}>
                   {timeString}
                 </span>
               </div>
@@ -91,30 +97,30 @@ export const SoilMoistureChecker: React.FC = () => {
           data={moistureData}
         />
 
-        <div className="soil-moisture-info-section">
-          <h3 className="soil-moisture-info-title">
+        <div className={styles.infoSection}>
+          <h3 className={styles.infoTitle}>
             Klasifikasi Kelembapan Tanah
           </h3>
-          <div className="soil-moisture-guide-grid">
-            <div className="soil-moisture-guide-item">
-              <div className="soil-moisture-guide-color red"></div>
-              <div className="soil-moisture-guide-range red">0-19%</div>
-              <div className="soil-moisture-guide-status">Sangat Kering</div>
+          <div className={styles.guideGrid}>
+            <div className={styles.guideItem}>
+              <div className={`${styles.guideColor} ${styles.guideColorRed}`}></div>
+              <div className={`${styles.guideRange} ${styles.guideRangeRed}`}>0-19%</div>
+              <div className={styles.guideStatus}>Sangat Kering</div>
             </div>
-            <div className="soil-moisture-guide-item">
-              <div className="soil-moisture-guide-color yellow"></div>
-              <div className="soil-moisture-guide-range yellow">20-39%</div>
-              <div className="soil-moisture-guide-status">Kering</div>
+            <div className={styles.guideItem}>
+              <div className={`${styles.guideColor} ${styles.guideColorYellow}`}></div>
+              <div className={`${styles.guideRange} ${styles.guideRangeYellow}`}>20-39%</div>
+              <div className={styles.guideStatus}>Kering</div>
             </div>
-            <div className="soil-moisture-guide-item">
-              <div className="soil-moisture-guide-color green"></div>
-              <div className="soil-moisture-guide-range green">40-59%</div>
-              <div className="soil-moisture-guide-status">Baik</div>
+            <div className={styles.guideItem}>
+              <div className={`${styles.guideColor} ${styles.guideColorGreen}`}></div>
+              <div className={`${styles.guideRange} ${styles.guideRangeGreen}`}>40-59%</div>
+              <div className={styles.guideStatus}>Baik</div>
             </div>
-            <div className="soil-moisture-guide-item">
-              <div className="soil-moisture-guide-color blue"></div>
-              <div className="soil-moisture-guide-range blue">60-70%</div>
-              <div className="soil-moisture-guide-status">Lembab</div>
+            <div className={styles.guideItem}>
+              <div className={`${styles.guideColor} ${styles.guideColorBlue}`}></div>
+              <div className={`${styles.guideRange} ${styles.guideRangeBlue}`}>60-70%</div>
+              <div className={styles.guideStatus}>Lembab</div>
             </div>
           </div>
         </div>

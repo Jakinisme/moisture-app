@@ -1,1 +1,3 @@
-export { Gauge } from './Gauge';
+import { Gauge } from "./Gauge";
+
+export default Gauge
