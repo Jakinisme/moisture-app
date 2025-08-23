@@ -1,5 +1,6 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import styles from './Graph.module.css';
 
 interface MoistureDataPoint {
   timestamp: string;
@@ -13,9 +14,9 @@ interface GraphProps {
 
 export const Graph: React.FC<GraphProps> = ({ data, title = "Kelembapan Tanah Selama 24 Jam Terakhir" }) => {
   return (
-    <div className="soil-moisture-graph-container">
-      <h3 className="soil-moisture-graph-title">{title}</h3>
-      <div className="soil-moisture-graph">
+    <div className={styles.container}>
+      <h3 className={styles.title}>{title}</h3>
+      <div className={styles.graph}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
