@@ -1,5 +1,5 @@
 import React from 'react';
-import { SoilMoistureChecker } from '../../layout/SoilMoistureChecker';
+import { SoilMoistureChecker } from '../../layout/Moisture';
 
 const Home: React.FC = () => {
   return <SoilMoistureChecker />;
