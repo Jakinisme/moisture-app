@@ -26,7 +26,7 @@ export const SoilMoistureChecker: React.FC = () => {
       setCurrentMoisture(newMoisture);
       
       const now = new Date();
-      const timeString = now.toLocaleTimeString('en-US', { 
+      const timeString = now.toLocaleTimeString('id-ID', { 
         hour: '2-digit', 
         minute: '2-digit',
         hour12: false 
