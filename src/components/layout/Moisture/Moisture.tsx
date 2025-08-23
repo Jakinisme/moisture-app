@@ -36,7 +36,7 @@ export const SoilMoistureChecker: React.FC = () => {
         const newData = [...prev, { timestamp: timeString, moisture: newMoisture }];
         return newData.slice(-24);
       });
-    }, 5000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
