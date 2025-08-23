@@ -1,1 +1,3 @@
-export { SoilMoistureChecker } from './Moisture';
+import { SoilMoistureChecker } from "./Moisture";
+
+export default SoilMoistureChecker
