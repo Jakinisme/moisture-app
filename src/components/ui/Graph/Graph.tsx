@@ -29,7 +29,7 @@ export const Graph: React.FC<GraphProps> = ({ data, title = "Kelembapan Tanah Se
             <YAxis 
               domain={[0, 70]}
               tick={{ fontSize: 12 }}
-              label={{ value: 'level Kelembapan', angle: -90, position: 'insideCenter' }}
+              label={{ value: 'Level Kelembapan', angle: -90, position: 'insideCenter' }}
             />
             <Tooltip 
               formatter={(value: number) => [`${value}%`, 'Moisture']}
