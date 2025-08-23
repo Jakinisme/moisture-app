@@ -32,8 +32,8 @@ export const Graph: React.FC<GraphProps> = ({ data, title = "Kelembapan Tanah Se
               label={{ value: 'Level Kelembapan', angle: -90, position: 'insideCenter' }}
             />
             <Tooltip 
-              formatter={(value: number) => [`${value}%`, 'Moisture']}
-              labelFormatter={(label) => `Time: ${label}`}
+              formatter={(value: number) => [`${value}%`, 'Kelembapan']}
+              labelFormatter={(label) => `Waktu: ${label}`}
             />
             <Line 
               type="monotone" 
