@@ -7,7 +7,7 @@ import MoistureGuide from '../../../constants/MoistureGuide/Index';
 import styles from './Moisture.module.css';
 
 export const MoistureChecker: React.FC = () => {
-  const { currentMoisture, moistureData } = HandleMoisture();
+  const { currentMoisture, moistureData, lastUpdate } = HandleMoisture();
 
   const getStatusClass = (moisture: number) => {
     if (moisture < 20) return styles.statusBadgeVeryDry;
@@ -53,11 +53,7 @@ export const MoistureChecker: React.FC = () => {
               <div className={styles.statusItem}>
                 <span className={styles.statusLabel}>Terakhir Diperbarui:</span>
                 <span className={styles.timestamp}>
-                  {new Date().toLocaleTimeString('id-ID', { 
-                    hour: '2-digit', 
-                    minute: '2-digit',
-                    hour12: false 
-                  })}
+                  {lastUpdate}
                 </span>
               </div>
             </div>

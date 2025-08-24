@@ -1,11 +1,11 @@
-import {useState, useEffect} from 'react'
+import { useEffect, useState } from "react";
 
 interface MoistureDataPoint {
-  timestamp: string;
+  timestamp: number;
   moisture: number;
 }
 
-const HandleMoisture = () => {
+export const HandleMoisture = () => {
   const [moistureData, setMoistureData] = useState<MoistureDataPoint[]>([]);
   const [currentMoisture, setCurrentMoisture] = useState<number>(0);
   const [lastUpdate, setLastUpdate] = useState<string>("");
@@ -13,17 +13,19 @@ const HandleMoisture = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const newMoisture = Math.floor(Math.random() * 71);
-      const now = new Date();
-      const timeString = now.toLocaleTimeString("id-ID", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
+      const now = Date.now();
 
       setCurrentMoisture(newMoisture);
-      setLastUpdate(timeString);
+      setLastUpdate(
+        new Date(now).toLocaleTimeString("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
+      );
+
       setMoistureData(prev => {
-        const newData = [...prev, { timestamp: timeString, moisture: newMoisture }];
+        const newData = [...prev, { timestamp: now, moisture: newMoisture }];
         return newData.slice(-24);
       });
     }, 10000);
@@ -33,5 +35,3 @@ const HandleMoisture = () => {
 
   return { currentMoisture, moistureData, lastUpdate };
 };
-
-export default HandleMoisture
