@@ -1,8 +1,12 @@
 import React from 'react';
-import SoilMoistureChecker from '../../layout/Moisture';
+import MoistureChecker from '../../layout/Moisture';
 
 const Home: React.FC = () => {
-  return <SoilMoistureChecker />;
+  return (
+    <main>
+      <MoistureChecker />;
+    </main>
+  )
 };
 
 export default Home
