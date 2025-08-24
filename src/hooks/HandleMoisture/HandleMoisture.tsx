@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { db } from "../../services/HitFirebase/FirebaseConfig"; 
+import { ref, onValue } from "firebase/database";
 
 interface MoistureDataPoint {
   timestamp: number;
@@ -11,26 +13,30 @@ export const HandleMoisture = () => {
   const [lastUpdate, setLastUpdate] = useState<string>("");
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const newMoisture = Math.floor(Math.random() * 71);
-      const now = Date.now();
+    const dataRef = ref(db, "/");
+    const unsubscribe = onValue(dataRef, (snapshot) => {
+      const val = snapshot.val();
+      if (!val) return;
 
-      setCurrentMoisture(newMoisture);
+      const moisture = val.soil?.moisture ?? 0;
+      const ts = Date.now();
+
+      setCurrentMoisture(moisture);
       setLastUpdate(
-        new Date(now).toLocaleTimeString("id-ID", {
+        new Date(ts).toLocaleTimeString("id-ID", {
           hour: "2-digit",
           minute: "2-digit",
           hour12: false,
         })
       );
 
-      setMoistureData(prev => {
-        const newData = [...prev, { timestamp: now, moisture: newMoisture }];
+      setMoistureData((prev) => {
+        const newData = [...prev, { timestamp: ts, moisture }];
         return newData.slice(-24);
       });
-    }, 10000);
+    });
 
-    return () => clearInterval(interval);
+    return () => unsubscribe();
   }, []);
 
   return { currentMoisture, moistureData, lastUpdate };
