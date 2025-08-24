@@ -44,7 +44,7 @@
 
 @media (min-width: 1024px) {
   .grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.7fr 1.3fr;
     gap: 3rem;
   }
 }
@@ -75,8 +75,14 @@
 
 .gaugeContainer {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .gaugeContainer {
+    justify-content: flex-start;
+  }
 }
 
 .statusCard {
@@ -197,6 +203,14 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (min-width: 1024px) {
+  .graphContainer {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 0;
+  }
 }
 
 .infoSection {
@@ -338,6 +352,12 @@
   border-radius: 0.75rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   padding: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .graph {
+    height: 35rem;
+  }
 }
 
 .graphTitle {
