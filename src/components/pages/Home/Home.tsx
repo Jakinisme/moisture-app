@@ -4,7 +4,7 @@ import MoistureChecker from '../../layout/Moisture';
 const Home: React.FC = () => {
   return (
     <main>
-      <MoistureChecker />;
+      <MoistureChecker />
     </main>
   )
 };
