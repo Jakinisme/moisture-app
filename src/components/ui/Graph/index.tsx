@@ -1,3 +1,4 @@
 import { Graph } from "./Graph";
+import React from "react";
 
-export default Graph
+export default React.memo(Graph);
