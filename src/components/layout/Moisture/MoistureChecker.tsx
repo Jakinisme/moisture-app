@@ -20,7 +20,7 @@ export const MoistureChecker: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.header}>
-          <h1 className={styles.title}>Monitor Kelembapan Tanah</h1>
+          <h1 className={styles.title}>EcoFarmX</h1>
           <p className={styles.subtitle}>Memantau kelembapan tanah secara real-time</p>
         </div>
         
