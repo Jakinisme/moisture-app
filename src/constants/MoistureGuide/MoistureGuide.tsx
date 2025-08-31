@@ -1,6 +1,12 @@
 import styles from '../../components/layout/Moisture/Moisture.module.css';
+import  useIntersectionObserver  from '../../hooks/intersectionObserver';
 
 const MoistureGuide = () => {
+  const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
+      threshold: 0.4,
+      rootMargin: '50px'
+    });
+    
     const guideItem = [
     {
       item: 'Sangat Kering',
@@ -33,7 +39,14 @@ const MoistureGuide = () => {
   ]
 
   return (
-        <div className={styles.guideGrid}>
+        <div
+          ref={ref}
+          className={styles.guideGrid}
+          style={{
+            opacity: isIntersecting ? 1 : 0,
+            transform: isIntersecting ? 'translateX(0)' : 'translateX(-50px)',
+            transition: 'opacity 0.8s ease-out, transform 0.8s ease-out'
+          }}>
             {guideItem.map((item, index) => (
               <div key={index} className={styles.guideItem}>
                 <div className={item.color}></div>

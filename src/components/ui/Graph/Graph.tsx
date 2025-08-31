@@ -1,5 +1,6 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import  useIntersectionObserver  from '../../../hooks/intersectionObserver';
 import styles from './Graph.module.css';
 
 interface MoistureDataPoint {
@@ -16,8 +17,21 @@ export const Graph: React.FC<GraphProps> = ({
   data,
   title = "Kelembapan Tanah Selama 24 Jam Terakhir",
 }) => {
+  const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
+    threshold: 0.4,
+    rootMargin: '50px'
+  });
+
   return (
-    <div className={styles.container}>
+    <div 
+      ref={ref}
+      className={styles.container}
+      style={{
+        opacity: isIntersecting ? 1 : 0,
+        transform: isIntersecting ? 'translateX(0)' : 'translateX(-50px)',
+        transition: 'opacity 0.8s ease-out, transform 0.8s ease-out'
+      }}
+    >
       <h3 className={styles.title}>{title}</h3>
       <div className={styles.graph}>
         <ResponsiveContainer width="100%" height="100%">

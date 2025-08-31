@@ -1,4 +1,5 @@
 import React from 'react';
+import  useIntersectionObserver  from '../../../hooks/intersectionObserver';
 import styles from './Gauge.module.css';
 
 interface GaugeProps {
@@ -14,6 +15,11 @@ export const Gauge: React.FC<GaugeProps> = ({
   title = "Current Moisture Level",
   size = 200 
 }) => {
+  const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
+    threshold: 0.3,
+    rootMargin: '30px'
+  });
+
   const radius = size / 2;
   const strokeWidth = size * 0.1;
   const normalizedRadius = radius - strokeWidth * 2;
@@ -36,7 +42,15 @@ export const Gauge: React.FC<GaugeProps> = ({
   };
 
   return (
-    <div className={styles.gauge}>
+    <div 
+      ref={ref}
+      className={styles.gauge}
+      style={{
+        opacity: isIntersecting ? 1 : 0,
+        transform: isIntersecting ? 'scale(1)' : 'scale(0.8)',
+        transition: 'opacity 0.6s ease-out, transform 0.6s ease-out'
+      }}
+    >
       <h3 className={styles.title}>{title}</h3>
       
       <div style={{ position: 'relative', width: size, height: size }}>

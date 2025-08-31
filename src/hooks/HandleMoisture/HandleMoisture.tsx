@@ -14,29 +14,29 @@ export const HandleMoisture = () => {
 
   useEffect(() => {
     const dataRef = ref(db, "/");
-    const unsubscribe = onValue(dataRef, (snapshot) => {
-      const val = snapshot.val();
-      if (!val) return;
+  const unsubscribe = onValue(dataRef, (snapshot) => {
+    const val = snapshot.val();
+    if (!val) return;
 
-      const moisture = val.soil?.moisture ?? 0;
-      const ts = Date.now();
+    const moisture = val.soil?.moisture ?? 0;
+    const ts = Date.now();
 
-      setCurrentMoisture(moisture);
-      setLastUpdate(
-        new Date(ts).toLocaleTimeString("id-ID", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })
-      );
+    setCurrentMoisture(moisture);
+    setLastUpdate(
+      new Date(ts).toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })
+    );
 
-      setMoistureData((prev) => {
-        const newData = [...prev, { timestamp: ts, moisture }];
-        return newData.slice(-24);
-      });
+    setMoistureData((prev) => {
+      const newData = [...prev, { timestamp: ts, moisture }];
+      return newData.slice(-24);
     });
+  });
 
-    return () => unsubscribe();
+  return () => unsubscribe();
   }, []);
 
   return { currentMoisture, moistureData, lastUpdate };
