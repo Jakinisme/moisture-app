@@ -1,3 +1,3 @@
-import { HandleMoisture } from "./HandleMoisture";
+import HandleMoisture from "./HandleMoisture";
 
 export default HandleMoisture

@@ -21,11 +21,10 @@ const History = () => {
   };
 
   const getMoistureStatus = (moisture: number) => {
-    if (moisture < 30) return { status: ' Sangat Kering', color: '#ef4444' };
-    if (moisture < 50) return { status: 'Kering', color: '#f97316' };
-    if (moisture < 70) return { status: 'Baik', color: '#22c55e' };
-    if (moisture < 85) return { status: 'Lembab', color: '#3b82f6' };
-    return { status: 'Sangat Lembab', color: '#8b5cf6' };
+    if (moisture < 20) return { status: ' Sangat Kering', color: '#ef4444' };
+    if (moisture < 40) return { status: 'Kering', color: '#f97316' };
+    if (moisture < 60) return { status: 'Baik', color: '#22c55e' };
+    return { status: 'Lembab', color: '#3b82f6' };
   };
 
   const processWeeklyData = useCallback((dailyData: DailyMoistureData[]): WeeklyMoistureData[] => {
@@ -104,7 +103,7 @@ const History = () => {
         return processWeeklyData(monthYearData);
       
       case 'month':
-        return processMonthlyData(monthYearData);
+        return processMonthlyData(monthYearData)
       
       default:
         return monthYearData;

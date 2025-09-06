@@ -7,7 +7,7 @@ interface MoistureDataPoint {
   moisture: number;
 }
 
-export const HandleMoisture = () => {
+const HandleMoisture = () => {
   const [moistureData, setMoistureData] = useState<MoistureDataPoint[]>([]);
   const [currentMoisture, setCurrentMoisture] = useState<number>(0);
   const [lastUpdate, setLastUpdate] = useState<string>("");
@@ -41,3 +41,5 @@ export const HandleMoisture = () => {
 
   return { currentMoisture, moistureData, lastUpdate };
 };
+
+export default HandleMoisture

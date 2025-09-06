@@ -1,3 +1,3 @@
-import HandleHistory from "./HandleHistory";
+import HandleHistory  from "./HandleHistory";
 
 export default HandleHistory;
