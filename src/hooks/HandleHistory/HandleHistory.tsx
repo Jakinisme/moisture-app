@@ -21,29 +21,49 @@ const getMoistureStatus = (moisture: number): MoistureStatus => {
   return { status: "Lembab", color: "#3b82f6" };
 };
 
-// proses data harian (flat)
+// Proses data harian berdasarkan struktur Firebase Anda
 const processDayData = (
-  dayData: { moisture?: number; timestamp?: number } | null,
+  dayData: number | { moisture: number; timestamp?: number }, // Data dari Firebase bisa berupa number atau object
   dateStr: string
 ): DailyMoistureData | null => {
-  if (!dayData || dayData.moisture === undefined || dayData.timestamp === undefined) return null;
+  // Jika data adalah number (langsung nilai moisture)
+  if (typeof dayData === 'number') {
+    const reading: MoistureDataPoint = { 
+      moisture: dayData, 
+      timestamp: Date.now() // Default timestamp jika tidak ada
+    };
 
-  const moisture = dayData.moisture;
-  const ts = dayData.timestamp;
+    return {
+      date: dateStr,
+      averageMoisture: Math.round(dayData * 100) / 100,
+      minMoisture: dayData,
+      maxMoisture: dayData,
+      readings: [reading],
+      status: getMoistureStatus(dayData),
+    };
+  }
+  
+  // Jika data adalah object dengan properti moisture dan timestamp
+  if (dayData && dayData.moisture !== undefined) {
+    const moisture = dayData.moisture;
+    const timestamp = dayData.timestamp || Date.now();
 
-  const reading: MoistureDataPoint = { moisture, timestamp: ts };
+    const reading: MoistureDataPoint = { moisture, timestamp };
 
-  return {
-    date: dateStr,
-    averageMoisture: Math.round(moisture * 100) / 100,
-    minMoisture: moisture,
-    maxMoisture: moisture,
-    readings: [reading],
-    status: getMoistureStatus(moisture),
-  };
+    return {
+      date: dateStr,
+      averageMoisture: Math.round(moisture * 100) / 100,
+      minMoisture: moisture,
+      maxMoisture: moisture,
+      readings: [reading],
+      status: getMoistureStatus(moisture),
+    };
+  }
+
+  return null;
 };
 
-// fetch data per tanggal
+// Fetch data per tanggal
 const fetchDayData = async (dateStr: string): Promise<DailyMoistureData | null> => {
   try {
     const dayRef = ref(db, `history/${dateStr}`);
@@ -90,9 +110,14 @@ export const HandleHistory = (
         let cacheKey = "";
 
         if (filterPeriod === "day") {
+          // Untuk day, ambil data 30 hari terakhir
           const today = new Date();
-          dateStrings = [format(today, "yyyy-MM-dd")];
-          cacheKey = `day-${format(today, "yyyy-MM-dd")}`;
+          dateStrings = Array.from({ length: 30 }, (_, i) => {
+            const date = new Date(today);
+            date.setDate(today.getDate() - i);
+            return format(date, "yyyy-MM-dd");
+          });
+          cacheKey = `day-${format(today, "yyyy-MM")}`;
         } else if ((filterPeriod === "week" || filterPeriod === "month") && month && year) {
           const targetDate = new Date(year, month - 1, 1);
           const daysInMonth = getDaysInMonth(targetDate);
@@ -102,7 +127,7 @@ export const HandleHistory = (
           cacheKey = `${filterPeriod}-${year}-${month}`;
         }
 
-        // cek cache
+        // Cek cache
         const cachedEntry = monthlyCache.get(cacheKey);
         if (cachedEntry && Date.now() - cachedEntry.timestamp < CACHE_DURATION) {
           setDailyData(cachedEntry.data);
@@ -111,7 +136,7 @@ export const HandleHistory = (
           return;
         }
 
-        // fetch data
+        // Fetch data
         console.log(`Fetching data for dates:`, dateStrings);
         const results = await Promise.all(
           dateStrings.map(async (dateStr) => {
@@ -134,7 +159,6 @@ export const HandleHistory = (
         );
 
         console.log(`Valid data found:`, validData.length, 'out of', results.length);
-        console.log(`Valid data:`, validData);
 
         if (cacheKey && validData.length > 0) {
           monthlyCache.set(cacheKey, {

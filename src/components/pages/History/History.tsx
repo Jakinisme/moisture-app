@@ -94,23 +94,30 @@ const History = () => {
   }, [selectedMonth, selectedYear, months]);
 
   const filteredData = useMemo((): (DailyMoistureData | WeeklyMoistureData)[] => {
+    // Filter data berdasarkan bulan dan tahun yang dipilih
+    const dataFilteredByMonthYear = dailyData.filter(item => {
+      const itemDate = new Date(item.date);
+      const itemMonth = itemDate.getMonth() + 1;
+      const itemYear = itemDate.getFullYear();
+      return itemMonth === selectedMonth && itemYear === selectedYear;
+    });
+
     switch (filterPeriod) {
       case 'day':
-        // Untuk filter harian, tampilkan semua data tanpa pemrosesan khusus
-        return dailyData;
+        return dataFilteredByMonthYear;
       
       case 'week': {
-        return processWeeklyData(dailyData);
+        return processWeeklyData(dataFilteredByMonthYear);
       }
       
       case 'month': {
-        return processMonthlyData(dailyData);
+        return processMonthlyData(dataFilteredByMonthYear);
       }
       
       default:
-        return dailyData;
+        return dataFilteredByMonthYear;
     }
-  }, [dailyData, filterPeriod, processWeeklyData, processMonthlyData]);
+  }, [dailyData, filterPeriod, selectedMonth, selectedYear, processWeeklyData, processMonthlyData]);
 
   const availableMonths = useMemo(() => {
     const monthSet = new Set<number>();
@@ -139,15 +146,6 @@ const History = () => {
     }
   }, [availableMonths, availableYears, selectedMonth, selectedYear]);
 
-  // Hitung jumlah hari tersisa di bulan ini untuk teks deskripsi
-  const remainingDays = useMemo(() => {
-    if (filterPeriod !== 'day') return 0;
-    
-    const today = new Date();
-    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    return lastDayOfMonth.getDate() - today.getDate();
-  }, [filterPeriod]);
-
   return (
     <div className={styles.historyContainer}>
       <div className={styles.filterSection}>
@@ -170,39 +168,35 @@ const History = () => {
           </div>
         </div>
 
-        {filterPeriod !== 'day' && (
-          <>
-            <div className={styles.filterGroup}>
-              <label className={styles.filterLabel}>Bulan:</label>
-              <select
-                className={styles.select}
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(Number(e.target.value))}
-              >
-                {availableMonths.map((monthNumber) => (
-                  <option key={monthNumber} value={monthNumber}>
-                    {months[monthNumber - 1]}
-                  </option>
-                ))}
-              </select>
-            </div>
+        <div className={styles.filterGroup}>
+          <label className={styles.filterLabel}>Bulan:</label>
+          <select
+            className={styles.select}
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+          >
+            {availableMonths.map((monthNumber) => (
+              <option key={monthNumber} value={monthNumber}>
+                {months[monthNumber - 1]}
+              </option>
+            ))}
+          </select>
+        </div>
 
-            <div className={styles.filterGroup}>
-              <label className={styles.filterLabel}>Tahun:</label>
-              <select
-                className={styles.select}
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(Number(e.target.value))}
-              >
-                {availableYears.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </>
-        )}
+        <div className={styles.filterGroup}>
+          <label className={styles.filterLabel}>Tahun:</label>
+          <select
+            className={styles.select}
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+          >
+            {availableYears.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className={styles.dataSection}>
@@ -218,19 +212,19 @@ const History = () => {
           <>
             <div className={styles.summarySection}>
               <h3 className={styles.summaryTitle}>
-                {filterPeriod === 'day' && `Data Harian - ${remainingDays} Hari Tersisa`}
+                {filterPeriod === 'day' && `Data Harian - ${months[selectedMonth - 1]} ${selectedYear}`}
                 {filterPeriod === 'week' && `Data Mingguan - ${months[selectedMonth - 1]} ${selectedYear}`}
                 {filterPeriod === 'month' && `Data Bulanan - ${months[selectedMonth - 1]} ${selectedYear}`}
                 {cacheHit && <span className={styles.cacheIndicator}> (Cached)</span>}
               </h3>
               <p className={styles.summarySubtitle}>
-                {filterPeriod === 'day' && `Menampilkan ${filteredData.length} hari tersisa dengan rata-rata kelembapan per hari`}
+                {filterPeriod === 'day' && `Menampilkan ${filteredData.length} hari dengan rata-rata kelembapan per hari`}
                 {filterPeriod === 'week' && `Menampilkan ${filteredData.length} minggu dengan rata-rata kelembapan`}
                 {filterPeriod === 'month' && `Menampilkan rata-rata kelembapan untuk satu bulan`}
               </p>
               {errors.length > 0 && (
                 <div className={styles.errorSection}>
-                  <h4>Errors encountered:</h4>
+                  <h4>Error yang ditemukan:</h4>
                   {errors.map((error, index) => (
                     <div key={index} className={styles.errorItem}>
                       <strong>{error.date}:</strong> {error.error}
