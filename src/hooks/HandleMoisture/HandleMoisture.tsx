@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { db } from "../../services/HitFirebase/FirebaseConfig"; 
+import { db } from "../../services/HitFirebase"; 
 import { ref, onValue } from "firebase/database";
 
 interface MoistureDataPoint {
@@ -13,7 +13,7 @@ const HandleMoisture = () => {
   const [lastUpdate, setLastUpdate] = useState<string>("");
 
   useEffect(() => {
-    const dataRef = ref(db, "/");
+    const dataRef = ref(db, "/soil/current");
   const unsubscribe = onValue(dataRef, (snapshot) => {
     const val = snapshot.val();
     if (!val) return;

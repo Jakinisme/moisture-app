@@ -5,10 +5,10 @@ import type { FilterPeriod, DailyMoistureData, WeeklyMoistureData } from '../../
 import styles from './History.module.css';
 
 const History = () => {
-  const { dailyData, loading } = HandleHistory();
   const [filterPeriod, setFilterPeriod] = useState<FilterPeriod>('day');
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const { dailyData, loading, errors, cacheHit } = HandleHistory(filterPeriod, selectedMonth, selectedYear);
 
 
   const formatDate = (dateString: string) => {
@@ -20,51 +20,56 @@ const History = () => {
     });
   };
 
-  const getMoistureStatus = (moisture: number) => {
-    if (moisture < 20) return { status: ' Sangat Kering', color: '#ef4444' };
-    if (moisture < 40) return { status: 'Kering', color: '#f97316' };
-    if (moisture < 60) return { status: 'Baik', color: '#22c55e' };
-    return { status: 'Lembab', color: '#3b82f6' };
-  };
+  const months = useMemo(
+    () => [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ],
+    []
+  );
 
   const processWeeklyData = useCallback((dailyData: DailyMoistureData[]): WeeklyMoistureData[] => {
-    const weeklyMap = new Map<number, DailyMoistureData[]>();
-    
-    dailyData.forEach(day => {
-      const date = new Date(day.date);
-      const weekNumber = Math.ceil(date.getDate() / 7);
-      
-      if (!weeklyMap.has(weekNumber)) {
-        weeklyMap.set(weekNumber, []);
-      }
-      weeklyMap.get(weekNumber)!.push(day);
-    });
+    if (dailyData.length === 0) return [];
 
-    return Array.from(weeklyMap.entries()).map(([weekNumber, days]) => {
-      const allReadings = days.flatMap(day => day.readings);
+    const sortedData = dailyData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    
+    const weeklyData: WeeklyMoistureData[] = [];
+    const daysPerWeek = 7;
+    const maxWeeks = 4;
+    
+    for (let weekIndex = 0; weekIndex < maxWeeks; weekIndex++) {
+      const startIndex = weekIndex * daysPerWeek;
+      const endIndex = weekIndex === maxWeeks - 1 ? sortedData.length : startIndex + daysPerWeek;
+      const weekDays = sortedData.slice(startIndex, endIndex);
+      
+      if (weekDays.length === 0) continue;
+      
+      const allReadings = weekDays.flatMap(day => day.readings);
       const moistureValues = allReadings.map(r => r.moisture);
       const averageMoisture = moistureValues.reduce((sum, val) => sum + val, 0) / moistureValues.length;
       const minMoisture = Math.min(...moistureValues);
       const maxMoisture = Math.max(...moistureValues);
+      
+      const startDate = new Date(weekDays[0].date);
+      const endDate = new Date(weekDays[weekDays.length - 1].date);
+      
+      const startDay = startDate.getDate();
+      const endDay = endDate.getDate();
+      const monthName = months[selectedMonth - 1];
+      const weekNumber = weekIndex + 1;
 
-      return {
-        date: `Minggu ${weekNumber}`,
+      weeklyData.push({
+        date: `Minggu ${weekNumber} (${startDay}-${endDay} ${monthName})`,
         averageMoisture: Math.round(averageMoisture * 100) / 100,
         minMoisture: Math.round(minMoisture * 100) / 100,
         maxMoisture: Math.round(maxMoisture * 100) / 100,
         readings: allReadings.sort((a, b) => a.timestamp - b.timestamp),
         weekNumber
-      };
-    }).sort((a, b) => a.weekNumber - b.weekNumber);
-  }, []);
-
-    const months = useMemo(
-  () => [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-  ],
-  []
-);
+      });
+    }
+    
+    return weeklyData;
+  }, [selectedMonth, months]);
 
   const processMonthlyData = useCallback((dailyData: DailyMoistureData[]): DailyMoistureData[] => {
     if (dailyData.length === 0) return [];
@@ -88,25 +93,32 @@ const History = () => {
   }, [selectedMonth, selectedYear, months]);
 
   const filteredData = useMemo((): (DailyMoistureData | WeeklyMoistureData)[] => {
-    const monthYearData = dailyData.filter(item => {
-      const itemDate = new Date(item.date);
-      const itemMonth = itemDate.getMonth() + 1;
-      const itemYear = itemDate.getFullYear();
-      return itemMonth === selectedMonth && itemYear === selectedYear;
-    });
-
     switch (filterPeriod) {
       case 'day':
-        return monthYearData;
+        return dailyData;
       
-      case 'week':
+      case 'week': {
+        const monthYearData = dailyData.filter(item => {
+          const itemDate = new Date(item.date);
+          const itemMonth = itemDate.getMonth() + 1;
+          const itemYear = itemDate.getFullYear();
+          return itemMonth === selectedMonth && itemYear === selectedYear;
+        });
         return processWeeklyData(monthYearData);
+      }
       
-      case 'month':
-        return processMonthlyData(monthYearData)
+      case 'month': {
+        const monthData = dailyData.filter(item => {
+          const itemDate = new Date(item.date);
+          const itemMonth = itemDate.getMonth() + 1;
+          const itemYear = itemDate.getFullYear();
+          return itemMonth === selectedMonth && itemYear === selectedYear;
+        });
+        return processMonthlyData(monthData);
+      }
       
       default:
-        return monthYearData;
+        return dailyData;
     }
   }, [dailyData, filterPeriod, selectedMonth, selectedYear, processWeeklyData, processMonthlyData]);
 
@@ -205,19 +217,38 @@ const History = () => {
           <>
             <div className={styles.summarySection}>
               <h3 className={styles.summaryTitle}>
-                {filterPeriod === 'day' && `Data Harian - ${months[selectedMonth - 1]} ${selectedYear}`}
+                {filterPeriod === 'day' && `Data Harian - Sisa Hari Bulan Ini`}
                 {filterPeriod === 'week' && `Data Mingguan - ${months[selectedMonth - 1]} ${selectedYear}`}
                 {filterPeriod === 'month' && `Data Bulanan - ${months[selectedMonth - 1]} ${selectedYear}`}
+                {cacheHit && <span className={styles.cacheIndicator}> (Cached)</span>}
               </h3>
               <p className={styles.summarySubtitle}>
-                {filterPeriod === 'day' && `Menampilkan ${filteredData.length} hari dengan data kelembapan`}
-                {filterPeriod === 'week' && `Menampilkan ${filteredData.length} minggu dengan rata-rata kelembapan`}
+                {filterPeriod === 'day' && `Menampilkan ${filteredData.length} hari tersisa dengan rata-rata kelembapan per hari`}
+                {filterPeriod === 'week' && `Menampilkan ${filteredData.length} minggu dengan rata-rata kelembapan (minggu 1-3: 7 hari, minggu 4: sisa hari)`}
                 {filterPeriod === 'month' && `Menampilkan rata-rata kelembapan untuk satu bulan`}
               </p>
+              {errors.length > 0 && (
+                <div className={styles.errorSection}>
+                  <h4>Errors encountered:</h4>
+                  {errors.map((error, index) => (
+                    <div key={index} className={styles.errorItem}>
+                      <strong>{error.date}:</strong> {error.error}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           <div className={styles.historyList}>
             {filteredData.map((item) => {
-              const moistureStatus = getMoistureStatus(item.averageMoisture);
+              const moistureStatus = item.status || { 
+                status: item.averageMoisture < 20 ? 'Sangat Kering' : 
+                       item.averageMoisture < 40 ? 'Kering' : 
+                       item.averageMoisture < 60 ? 'Baik' : 'Lembab',
+                color: item.averageMoisture < 20 ? '#ef4444' : 
+                       item.averageMoisture < 40 ? '#f97316' : 
+                       item.averageMoisture < 60 ? '#22c55e' : '#3b82f6'
+              };
+              
               return (
                 <div key={item.date} className={styles.historyItem}>
                   <div className={styles.dateInfo}>
@@ -244,29 +275,12 @@ const History = () => {
                       {moistureStatus.status}
                     </div>
                     <div className={styles.readingCount}>
-                      {item.readings.length} pembacaan
-                      {filterPeriod === 'week' && 'weekNumber' in item && ` (Minggu ${item.weekNumber})`}
+                      {filterPeriod === 'week' && 'weekNumber' in item && `Minggu ${item.weekNumber}`}
+                      {filterPeriod === 'month' && 'Bulanan'}
+                      {filterPeriod === 'day' && 'Harian'}
                     </div>
                   </div>
 
-                  <div className={styles.readingsDetail}>
-                    <h4 className={styles.readingsTitle}>Pembacaan Detail:</h4>
-                    <div className={styles.readingsList}>
-                      {item.readings.map((reading, index) => (
-                        <div key={`${reading.timestamp}-${index}`} className={styles.readingItem}>
-                          <span className={styles.readingTime}>
-                            {new Date(reading.timestamp).toLocaleTimeString('id-ID', {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </span>
-                          <span className={styles.readingValue}>
-                            {reading.moisture}%
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               );
             })}
