@@ -1,8 +1,3 @@
-/* =========================
-   Status & Guide Styles
-   ========================= */
-
-   /* Moisture.module.css */
 
 /* Container utama */
 .container {
@@ -235,11 +230,6 @@
   font-size: 0.875rem;
 }
 
-/* =========================
-   Responsive Styles
-   ========================= */
-
-/* Tablet (max-width: 1024px) */
 @media (max-width: 1024px) {
   .topSection {
     grid-template-columns: 1fr; /* jadi single column */
