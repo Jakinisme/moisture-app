@@ -18,8 +18,8 @@ const HandleMoisture = () => {
     const val = snapshot.val();
     if (!val) return;
 
-    const moisture = val.soil?.moisture ?? 0;
-    const ts = Date.now();
+    const moisture = val.moisture ?? 0;
+    const ts = val.timestamp ?? Date.now();
 
     setCurrentMoisture(moisture);
     setLastUpdate(
