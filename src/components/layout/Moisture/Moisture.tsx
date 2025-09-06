@@ -6,7 +6,7 @@ import StatusItem from '../../ui/StatusItem';
 
 import styles from './Moisture.module.css';
 
-export const MoistureChecker: React.FC = () => {
+ const Moisture: React.FC = () => {
   const { currentMoisture, moistureData } = HandleMoisture();  
 
   return (
@@ -36,3 +36,5 @@ export const MoistureChecker: React.FC = () => {
 
   );
 };
+
+export default Moisture

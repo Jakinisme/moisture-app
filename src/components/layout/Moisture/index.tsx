@@ -1,3 +1,3 @@
-import { MoistureChecker } from "./MoistureChecker";
+import Moisture from "./Moisture";
 
-export default MoistureChecker
+export default Moisture

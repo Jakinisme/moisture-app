@@ -1,10 +1,10 @@
 import React from 'react';
-import MoistureChecker from '../../layout/Moisture';
+import Moisture from '../../layout/Moisture';
 
 const Home: React.FC = () => {
   return (
     <main>
-      <MoistureChecker />
+      <Moisture />
     </main>
   )
 };
