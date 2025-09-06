@@ -19,7 +19,7 @@ const HandleMoisture = () => {
     if (!val) return;
 
     const moisture = val.moisture ?? 0;
-    const ts = val.timestamp ?? Date.now();
+    const ts = Date.now();
 
     setCurrentMoisture(moisture);
     setLastUpdate(
