@@ -24,6 +24,17 @@ export interface DailyHistoryData24h {
   [date: string]: HourlyMoistureData;
 }
 
+// New simplified structure matching your Firebase data
+export interface SimpleHistoryData {
+  [date: string]: MoistureReading;
+}
+
+export interface SimpleFirebaseData {
+  current: MoistureReading;
+  history: SimpleHistoryData;
+}
+
+// Keep old interfaces for backward compatibility if needed
 export interface SoilData {
   current: MoistureReading;
   history: DailyHistoryData;

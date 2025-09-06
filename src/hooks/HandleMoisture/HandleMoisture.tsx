@@ -13,7 +13,7 @@ const HandleMoisture = () => {
   const [lastUpdate, setLastUpdate] = useState<string>("");
 
   useEffect(() => {
-    const dataRef = ref(db, "/soil/current");
+    const dataRef = ref(db, "/current");
   const unsubscribe = onValue(dataRef, (snapshot) => {
     const val = snapshot.val();
     if (!val) return;

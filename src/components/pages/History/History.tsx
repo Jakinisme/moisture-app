@@ -10,7 +10,6 @@ const History = () => {
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
   const { dailyData, loading, errors, cacheHit } = HandleHistory(filterPeriod, selectedMonth, selectedYear);
 
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('id-ID', {
@@ -35,11 +34,13 @@ const History = () => {
     
     const weeklyData: WeeklyMoistureData[] = [];
     const daysPerWeek = 7;
-    const maxWeeks = 4;
     
-    for (let weekIndex = 0; weekIndex < maxWeeks; weekIndex++) {
+    // Hitung jumlah minggu berdasarkan jumlah hari
+    const totalWeeks = Math.ceil(sortedData.length / daysPerWeek);
+    
+    for (let weekIndex = 0; weekIndex < totalWeeks; weekIndex++) {
       const startIndex = weekIndex * daysPerWeek;
-      const endIndex = weekIndex === maxWeeks - 1 ? sortedData.length : startIndex + daysPerWeek;
+      const endIndex = Math.min(startIndex + daysPerWeek, sortedData.length);
       const weekDays = sortedData.slice(startIndex, endIndex);
       
       if (weekDays.length === 0) continue;
@@ -95,32 +96,21 @@ const History = () => {
   const filteredData = useMemo((): (DailyMoistureData | WeeklyMoistureData)[] => {
     switch (filterPeriod) {
       case 'day':
+        // Untuk filter harian, tampilkan semua data tanpa pemrosesan khusus
         return dailyData;
       
       case 'week': {
-        const monthYearData = dailyData.filter(item => {
-          const itemDate = new Date(item.date);
-          const itemMonth = itemDate.getMonth() + 1;
-          const itemYear = itemDate.getFullYear();
-          return itemMonth === selectedMonth && itemYear === selectedYear;
-        });
-        return processWeeklyData(monthYearData);
+        return processWeeklyData(dailyData);
       }
       
       case 'month': {
-        const monthData = dailyData.filter(item => {
-          const itemDate = new Date(item.date);
-          const itemMonth = itemDate.getMonth() + 1;
-          const itemYear = itemDate.getFullYear();
-          return itemMonth === selectedMonth && itemYear === selectedYear;
-        });
-        return processMonthlyData(monthData);
+        return processMonthlyData(dailyData);
       }
       
       default:
         return dailyData;
     }
-  }, [dailyData, filterPeriod, selectedMonth, selectedYear, processWeeklyData, processMonthlyData]);
+  }, [dailyData, filterPeriod, processWeeklyData, processMonthlyData]);
 
   const availableMonths = useMemo(() => {
     const monthSet = new Set<number>();
@@ -140,15 +130,23 @@ const History = () => {
     return Array.from(yearSet).sort((a, b) => b - a);
   }, [dailyData]);
 
-
   useEffect(() => {
     if (availableMonths.length && !availableMonths.includes(selectedMonth)) {
-      setSelectedMonth(availableMonths.at(-1)!);
+      setSelectedMonth(availableMonths[availableMonths.length - 1]);
     }
     if (availableYears.length && !availableYears.includes(selectedYear)) {
       setSelectedYear(availableYears[0]);
     }
   }, [availableMonths, availableYears, selectedMonth, selectedYear]);
+
+  // Hitung jumlah hari tersisa di bulan ini untuk teks deskripsi
+  const remainingDays = useMemo(() => {
+    if (filterPeriod !== 'day') return 0;
+    
+    const today = new Date();
+    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    return lastDayOfMonth.getDate() - today.getDate();
+  }, [filterPeriod]);
 
   return (
     <div className={styles.historyContainer}>
@@ -172,36 +170,39 @@ const History = () => {
           </div>
         </div>
 
-        <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>Bulan:</label>
-          <select
-            className={styles.select}
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(Number(e.target.value))}
-          >
-            {availableMonths.map((monthNumber) => (
-              <option key={monthNumber} value={monthNumber}>
-                {months[monthNumber - 1]}
-              </option>
-            ))}
-          </select>
-        </div>
+        {filterPeriod !== 'day' && (
+          <>
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel}>Bulan:</label>
+              <select
+                className={styles.select}
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(Number(e.target.value))}
+              >
+                {availableMonths.map((monthNumber) => (
+                  <option key={monthNumber} value={monthNumber}>
+                    {months[monthNumber - 1]}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>Tahun:</label>
-          <select
-            className={styles.select}
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(Number(e.target.value))}
-          >
-            {availableYears.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </div>
-
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel}>Tahun:</label>
+              <select
+                className={styles.select}
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+              >
+                {availableYears.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
+        )}
       </div>
 
       <div className={styles.dataSection}>
@@ -217,14 +218,14 @@ const History = () => {
           <>
             <div className={styles.summarySection}>
               <h3 className={styles.summaryTitle}>
-                {filterPeriod === 'day' && `Data Harian - Sisa Hari Bulan Ini`}
+                {filterPeriod === 'day' && `Data Harian - ${remainingDays} Hari Tersisa`}
                 {filterPeriod === 'week' && `Data Mingguan - ${months[selectedMonth - 1]} ${selectedYear}`}
                 {filterPeriod === 'month' && `Data Bulanan - ${months[selectedMonth - 1]} ${selectedYear}`}
                 {cacheHit && <span className={styles.cacheIndicator}> (Cached)</span>}
               </h3>
               <p className={styles.summarySubtitle}>
                 {filterPeriod === 'day' && `Menampilkan ${filteredData.length} hari tersisa dengan rata-rata kelembapan per hari`}
-                {filterPeriod === 'week' && `Menampilkan ${filteredData.length} minggu dengan rata-rata kelembapan (minggu 1-3: 7 hari, minggu 4: sisa hari)`}
+                {filterPeriod === 'week' && `Menampilkan ${filteredData.length} minggu dengan rata-rata kelembapan`}
                 {filterPeriod === 'month' && `Menampilkan rata-rata kelembapan untuk satu bulan`}
               </p>
               {errors.length > 0 && (
@@ -238,53 +239,52 @@ const History = () => {
                 </div>
               )}
             </div>
-          <div className={styles.historyList}>
-            {filteredData.map((item) => {
-              const moistureStatus = item.status || { 
-                status: item.averageMoisture < 20 ? 'Sangat Kering' : 
-                       item.averageMoisture < 40 ? 'Kering' : 
-                       item.averageMoisture < 60 ? 'Baik' : 'Lembab',
-                color: item.averageMoisture < 20 ? '#ef4444' : 
-                       item.averageMoisture < 40 ? '#f97316' : 
-                       item.averageMoisture < 60 ? '#22c55e' : '#3b82f6'
-              };
-              
-              return (
-                <div key={item.date} className={styles.historyItem}>
-                  <div className={styles.dateInfo}>
-                    <h3 className={styles.dateTitle}>{'weekNumber' in item ? item.date : formatDate(item.date)}</h3>
-                    <div className={styles.moistureStats}>
-                      {[
-                        { label: 'Rata-rata', value: item.averageMoisture },
-                        { label: 'Min', value: item.minMoisture },
-                        { label: 'Max', value: item.maxMoisture }
-                      ].map(({ label, value }) => (
-                        <div key={label} className={styles.statItem}>
-                          <span className={styles.statLabel}>{label}:</span>
-                          <span className={styles.statValue}>{value}%</span>
-                        </div>
-                      ))}
+            <div className={styles.historyList}>
+              {filteredData.map((item) => {
+                const moistureStatus = item.status || { 
+                  status: item.averageMoisture < 20 ? 'Sangat Kering' : 
+                         item.averageMoisture < 40 ? 'Kering' : 
+                         item.averageMoisture < 60 ? 'Baik' : 'Lembab',
+                  color: item.averageMoisture < 20 ? '#ef4444' : 
+                         item.averageMoisture < 40 ? '#f97316' : 
+                         item.averageMoisture < 60 ? '#22c55e' : '#3b82f6'
+                };
+                
+                return (
+                  <div key={item.date} className={styles.historyItem}>
+                    <div className={styles.dateInfo}>
+                      <h3 className={styles.dateTitle}>{'weekNumber' in item ? item.date : formatDate(item.date)}</h3>
+                      <div className={styles.moistureStats}>
+                        {[
+                          { label: 'Rata-rata', value: item.averageMoisture },
+                          { label: 'Min', value: item.minMoisture },
+                          { label: 'Max', value: item.maxMoisture }
+                        ].map(({ label, value }) => (
+                          <div key={label} className={styles.statItem}>
+                            <span className={styles.statLabel}>{label}:</span>
+                            <span className={styles.statValue}>{value}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className={styles.statusInfo}>
+                      <div 
+                        className={styles.statusBadge}
+                        style={{ backgroundColor: moistureStatus.color }}
+                      >
+                        {moistureStatus.status}
+                      </div>
+                      <div className={styles.readingCount}>
+                        {filterPeriod === 'week' && 'weekNumber' in item && `Minggu ${item.weekNumber}`}
+                        {filterPeriod === 'month' && `${item.readings.length} pembacaan`}
+                        {filterPeriod === 'day' && `${item.readings.length} pembacaan`}
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className={styles.statusInfo}>
-                    <div 
-                      className={styles.statusBadge}
-                      style={{ backgroundColor: moistureStatus.color }}
-                    >
-                      {moistureStatus.status}
-                    </div>
-                    <div className={styles.readingCount}>
-                      {filterPeriod === 'week' && 'weekNumber' in item && `Minggu ${item.weekNumber}`}
-                      {filterPeriod === 'month' && 'Bulanan'}
-                      {filterPeriod === 'day' && 'Harian'}
-                    </div>
-                  </div>
-
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
           </>
         )}
       </div>

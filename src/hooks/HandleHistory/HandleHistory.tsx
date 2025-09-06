@@ -26,7 +26,7 @@ const processDayData = (
   dayData: { moisture?: number; timestamp?: number } | null,
   dateStr: string
 ): DailyMoistureData | null => {
-  if (!dayData || dayData.moisture === undefined || !dayData.timestamp) return null;
+  if (!dayData || dayData.moisture === undefined || dayData.timestamp === undefined) return null;
 
   const moisture = dayData.moisture;
   const ts = dayData.timestamp;
@@ -46,9 +46,17 @@ const processDayData = (
 // fetch data per tanggal
 const fetchDayData = async (dateStr: string): Promise<DailyMoistureData | null> => {
   try {
-    const dayRef = ref(db, `soil/history/${dateStr}`);
+    const dayRef = ref(db, `history/${dateStr}`);
     const snapshot = await get(dayRef);
-    return snapshot.exists() ? processDayData(snapshot.val(), dateStr) : null;
+    
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      console.log(`Fetched data for ${dateStr}:`, data);
+      return processDayData(data, dateStr);
+    } else {
+      console.log(`No data found for ${dateStr}`);
+      return null;
+    }
   } catch (error) {
     console.error(`Error fetching data for ${dateStr}:`, error);
     return null;
@@ -104,6 +112,7 @@ export const HandleHistory = (
         }
 
         // fetch data
+        console.log(`Fetching data for dates:`, dateStrings);
         const results = await Promise.all(
           dateStrings.map(async (dateStr) => {
             if (signal.aborted) return null;
@@ -111,6 +120,7 @@ export const HandleHistory = (
               return await fetchDayData(dateStr);
             } catch (error) {
               const errorMessage = error instanceof Error ? error.message : "Unknown error";
+              console.error(`Error fetching ${dateStr}:`, error);
               setErrors((prev) => [...prev, { date: dateStr, error: errorMessage }]);
               return null;
             }
@@ -122,6 +132,9 @@ export const HandleHistory = (
         const validData = results.filter(
           (data): data is DailyMoistureData => data !== null
         );
+
+        console.log(`Valid data found:`, validData.length, 'out of', results.length);
+        console.log(`Valid data:`, validData);
 
         if (cacheKey && validData.length > 0) {
           monthlyCache.set(cacheKey, {
