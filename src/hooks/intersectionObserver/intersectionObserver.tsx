@@ -30,6 +30,10 @@ export const useIntersectionObserver = <T extends Element = Element>(
       if (callback) {
         callback(entry);
       }
+
+      if (entry.isIntersecting && observerRef.current) {
+        observerRef.current.unobserve(entry.target);
+      }
     },
     [callback]
   );

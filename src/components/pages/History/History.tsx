@@ -1,7 +1,11 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import Button from '../../ui/Button';
 import HandleHistory from '../../../hooks/HandleHistory';
+
 import type { FilterPeriod, DailyMoistureData, WeeklyMoistureData } from '../../../types/moisture';
+
+import useIntersectionObserver from '../../../hooks/intersectionObserver';
+
 import styles from './History.module.css';
 
 const History = () => {
@@ -9,6 +13,11 @@ const History = () => {
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
   const { dailyData, loading, errors, cacheHit } = HandleHistory(filterPeriod, selectedMonth, selectedYear);
+
+  const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
+      threshold: 0.4,
+      rootMargin: '50px'
+    });
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -147,8 +156,17 @@ const History = () => {
   }, [availableMonths, availableYears, selectedMonth, selectedYear]);
 
   return (
+    <main>
     <div className={styles.historyContainer}>
-      <div className={styles.filterSection}>
+      <div 
+      className={styles.filterSection}
+      ref={ref}
+      style={{
+        opacity: isIntersecting ? 1 : 0,
+        transform: isIntersecting ? 'translateX(0)' : 'translateX(-50px)',
+        transition: 'opacity 0.8s ease-out, transform 0.8s ease-out'
+      }}
+      >
         <div className={styles.filterGroup}>
           <label className={styles.filterLabel}>Periode:</label>
           <div className={styles.buttonGroup}>
@@ -199,7 +217,15 @@ const History = () => {
         </div>
       </div>
 
-      <div className={styles.dataSection}>
+      <div
+       className={styles.dataSection}
+       ref={ref}
+       style={{
+        opacity: isIntersecting ? 1 : 0,
+        transform: isIntersecting ? 'translateX(0)' : 'translateX(-50px)',
+        transition: 'opacity 0.8s ease-out, transform 0.4s ease-out'
+      }}
+       >
         {loading ? (
           <div className={styles.loading}>
             <p>Memuat data kelembapan...</p>
@@ -283,6 +309,7 @@ const History = () => {
         )}
       </div>
     </div>
+    </main>
   );
 };
 
