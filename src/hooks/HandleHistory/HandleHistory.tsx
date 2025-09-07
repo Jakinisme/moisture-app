@@ -12,7 +12,7 @@ import type {
 } from "../../types/moisture";
 
 const monthlyCache = new Map<string, CacheEntry>();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
+const CACHE_DURATION = 5 * 60 * 1000;
 
 const getMoistureStatus = (moisture: number): MoistureStatus => {
   if (moisture < 20) return { status: "Sangat Kering", color: "#ef4444" };
@@ -21,16 +21,14 @@ const getMoistureStatus = (moisture: number): MoistureStatus => {
   return { status: "Lembab", color: "#3b82f6" };
 };
 
-// Proses data harian berdasarkan struktur Firebase Anda
 const processDayData = (
-  dayData: number | { moisture: number; timestamp?: number }, // Data dari Firebase bisa berupa number atau object
+  dayData: number | { moisture: number; timestamp?: number },
   dateStr: string
 ): DailyMoistureData | null => {
-  // Jika data adalah number (langsung nilai moisture)
   if (typeof dayData === 'number') {
     const reading: MoistureDataPoint = { 
       moisture: dayData, 
-      timestamp: Date.now() // Default timestamp jika tidak ada
+      timestamp: Date.now()
     };
 
     return {
@@ -43,7 +41,6 @@ const processDayData = (
     };
   }
   
-  // Jika data adalah object dengan properti moisture dan timestamp
   if (dayData && dayData.moisture !== undefined) {
     const moisture = dayData.moisture;
     const timestamp = dayData.timestamp || Date.now();
@@ -63,12 +60,12 @@ const processDayData = (
   return null;
 };
 
-// Fetch data per tanggal
 const fetchDayData = async (dateStr: string): Promise<DailyMoistureData | null> => {
   try {
-    const dayRef = ref(db, `history/${dateStr}`);
+    const dayRef = ref(db, `/soil/history/${dateStr}`);
     const snapshot = await get(dayRef);
-    
+
+    //liat data lewat console, data ? console ada : console ga ada
     if (snapshot.exists()) {
       const data = snapshot.val();
       console.log(`Fetched data for ${dateStr}:`, data);
@@ -110,7 +107,7 @@ export const HandleHistory = (
         let cacheKey = "";
 
         if (filterPeriod === "day") {
-          // Untuk day, ambil data 30 hari terakhir
+
           const today = new Date();
           dateStrings = Array.from({ length: 30 }, (_, i) => {
             const date = new Date(today);
@@ -127,7 +124,6 @@ export const HandleHistory = (
           cacheKey = `${filterPeriod}-${year}-${month}`;
         }
 
-        // Cek cache
         const cachedEntry = monthlyCache.get(cacheKey);
         if (cachedEntry && Date.now() - cachedEntry.timestamp < CACHE_DURATION) {
           setDailyData(cachedEntry.data);
@@ -136,7 +132,6 @@ export const HandleHistory = (
           return;
         }
 
-        // Fetch data
         console.log(`Fetching data for dates:`, dateStrings);
         const results = await Promise.all(
           dateStrings.map(async (dateStr) => {

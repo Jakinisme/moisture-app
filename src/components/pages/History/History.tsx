@@ -215,7 +215,7 @@ const History = () => {
                 {filterPeriod === 'day' && `Data Harian - ${months[selectedMonth - 1]} ${selectedYear}`}
                 {filterPeriod === 'week' && `Data Mingguan - ${months[selectedMonth - 1]} ${selectedYear}`}
                 {filterPeriod === 'month' && `Data Bulanan - ${months[selectedMonth - 1]} ${selectedYear}`}
-                {cacheHit && <span className={styles.cacheIndicator}> (Cached)</span>}
+                {cacheHit && <span className={styles.cacheIndicator} hidden> (Cached)</span>}
               </h3>
               <p className={styles.summarySubtitle}>
                 {filterPeriod === 'day' && `Menampilkan ${filteredData.length} hari dengan rata-rata kelembapan per hari`}
