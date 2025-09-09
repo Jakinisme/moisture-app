@@ -12,7 +12,7 @@ const History = () => {
   const [filterPeriod, setFilterPeriod] = useState<FilterPeriod>('day');
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
-  const { dailyData, loading, errors, cacheHit } = HandleHistory(filterPeriod, selectedMonth, selectedYear);
+  const { dailyData, loading, errors } = HandleHistory(filterPeriod, selectedMonth, selectedYear);
 
   const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
       threshold: 0.4,
@@ -168,7 +168,7 @@ const History = () => {
       }}
       >
         <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>Periode:</label>
+          <span className={styles.filterLabel}>Periode:</span>
           <div className={styles.buttonGroup}>
             {[
               { key: 'day', label: 'Harian' },
@@ -193,8 +193,8 @@ const History = () => {
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(Number(e.target.value))}
           >
-            {availableMonths.map((monthNumber) => (
-              <option key={monthNumber} value={monthNumber}>
+            {availableMonths.map((monthNumber, index) => (
+              <option key={monthNumber += index} value={monthNumber}>
                 {months[monthNumber - 1]}
               </option>
             ))}
@@ -202,14 +202,14 @@ const History = () => {
         </div>
 
         <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>Tahun:</label>
+          <span className={styles.filterLabel}>Tahun:</span>
           <select
             className={styles.select}
             value={selectedYear}
             onChange={(e) => setSelectedYear(Number(e.target.value))}
           >
-            {availableYears.map((year) => (
-              <option key={year} value={year}>
+            {availableYears.map((year, index) => (
+              <option key={year += index} value={year}>
                 {year}
               </option>
             ))}
@@ -241,7 +241,6 @@ const History = () => {
                 {filterPeriod === 'day' && `Data Harian - ${months[selectedMonth - 1]} ${selectedYear}`}
                 {filterPeriod === 'week' && `Data Mingguan - ${months[selectedMonth - 1]} ${selectedYear}`}
                 {filterPeriod === 'month' && `Data Bulanan - ${months[selectedMonth - 1]} ${selectedYear}`}
-                {cacheHit && <span className={styles.cacheIndicator} hidden> (Cached)</span>}
               </h3>
               <p className={styles.summarySubtitle}>
                 {filterPeriod === 'day' && `Menampilkan ${filteredData.length} hari dengan rata-rata kelembapan per hari`}
@@ -280,7 +279,7 @@ const History = () => {
                           { label: 'Min', value: item.minMoisture },
                           { label: 'Max', value: item.maxMoisture }
                         ].map(({ label, value }) => (
-                          <div key={label} className={styles.statItem}>
+                          <div key={label + value} className={styles.statItem}>
                             <span className={styles.statLabel}>{label}:</span>
                             <span className={styles.statValue}>{value}%</span>
                           </div>

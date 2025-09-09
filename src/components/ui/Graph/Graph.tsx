@@ -69,9 +69,9 @@ export const Graph: React.FC<GraphProps> = ({
             <Line
               type="monotone"
               dataKey="moisture"
-              stroke="#0059ffff"
+              stroke="#181818ff"
               strokeWidth={3}
-              dot={{ fill: "#0059ffff", strokeWidth: 2, r: 4 }}
+              dot={{ fill: "#4d4d4dff", strokeWidth: 2, r: 4 }}
               activeDot={{ r: 6, stroke: "##0059ffff", strokeWidth: 2 }}
             />
           </LineChart>

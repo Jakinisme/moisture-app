@@ -3,7 +3,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: linear-gradient(135deg, #a2c7f7 0%, #0058ca 100%);
+  background: linear-gradient(135deg, #000000 0%, #303030 100%);
   color: #ffffff;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);

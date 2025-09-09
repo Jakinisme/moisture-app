@@ -10,13 +10,13 @@
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(135deg, #a2c7f7 0%, #0058ca 100%);
-  color: #1f2937;
+  background: #252525;
+  color: #000000;
 }
 
 .container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #a2c7f7 0%, #0058ca 100%);
+  min-height: 100svh;
+  background: #252525;
   padding: 2rem 1.5rem;
 }
 
