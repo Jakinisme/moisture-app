@@ -35,7 +35,6 @@
   transform: translateX(-50%);
   width: 2.5rem;
   height: 2px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
   border-radius: 1px;
 }
 

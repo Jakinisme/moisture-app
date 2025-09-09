@@ -168,7 +168,6 @@
   transform: translateX(-50%);
   width: 3rem;
   height: 3px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
   border-radius: 2px;
 }
 
@@ -226,7 +225,7 @@
 
 @media (max-width: 1024px) {
   .topSection {
-    grid-template-columns: 1fr; /* jadi single column */
+    grid-template-columns: 1fr;
   }
 
   .content {
@@ -247,7 +246,6 @@
   }
 }
 
-/* Mobile (max-width: 640px) */
 @media (max-width: 640px) {
   .container {
     padding: 1rem;
