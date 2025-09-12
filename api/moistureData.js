@@ -1,5 +1,4 @@
 import admin from "firebase-admin";
-
 if (!admin.apps.length) {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
@@ -13,6 +12,10 @@ if (!admin.apps.length) {
 const db = admin.database();
 
 export default async function handler(req, res) {
+  if (req.headers['x-api-key'] !== import.meta.env.VITE_FIREBASE_API_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Only POST allowed" });
   }
