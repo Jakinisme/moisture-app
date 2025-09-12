@@ -1,7 +1,5 @@
 import admin from "firebase-admin";
 
-// === INIT FIREBASE ===
-// Cegah multiple init (Vercel re-use function container)
 if (!admin.apps.length) {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
@@ -18,21 +16,30 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Only POST allowed" });
   }
 
-  const { moisture, status, sensorId } = req.body;
+  const { moisture, status } = req.body;
 
   if (typeof moisture !== "number" || typeof status !== "string") {
     return res.status(400).json({ error: "Invalid payload" });
   }
 
   try {
-    const ref = db.ref("sensors").child(sensorId || "unknown");
-    await ref.push({
+    const ts = Date.now();
+    const dateKey = new Date(ts).toISOString().split("T")[0];
+
+    const soilRef = db.ref("soil");
+
+    await soilRef.child("current").set({
       moisture,
       status,
-      ts: Date.now(),
+      timestamp: ts,
     });
 
-    return res.status(200).json({ success: true, message: "Data saved to Realtime DB" });
+    await soilRef.child("history").child(dateKey).push({
+      moisture,
+      timestamp: ts,
+    });
+
+    return res.status(200).json({ success: true, message: "Soil data updated" });
   } catch (err) {
     console.error("DB write error:", err);
     return res.status(500).json({ error: "Database error" });
