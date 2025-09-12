@@ -14,7 +14,7 @@ const db = admin.database();
 
 export default async function handler(req, res) {
   if (req.headers['x-api-key'] !== process.env.VITE_FIREBASE_API_KEY) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: 'What are you doing?' });
   }
 
   if (req.method !== "POST") {
