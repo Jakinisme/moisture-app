@@ -13,9 +13,6 @@ if (!admin.apps.length) {
 const db = admin.database();
 
 export default async function handler(req, res) {
-  res.status(505).json("Received header:", req.headers);
-  res.status(504).json("Received API Key:", req.headers['x-api-key']);
-  
   if (req.headers['x-api-key'] !== process.env.VITE_FIREBASE_API_KEY) {
     return res.status(401).json({ error: 'What are you doing?' });
   }
