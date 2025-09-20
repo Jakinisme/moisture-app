@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
   const { moisture, status, dataType } = req.body;
 
-  if (typeof moisture !== "number") {
+  if (typeof moisture !== "number" || !["current", "daily"].includes(dataType)) {
     return res.status(400).json({ error: "Invalid payload" });
   }
 
