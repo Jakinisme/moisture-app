@@ -15,7 +15,7 @@ interface GraphProps {
 
 export const Graph: React.FC<GraphProps> = ({
   data,
-  title = "Kelembapan Tanah Saati Ini",
+  title = "Kelembapan Tanah Saat Ini",
 }) => {
   const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.4,
