@@ -28,6 +28,12 @@ const History = () => {
     });
   };
 
+  const selectButton = [
+    { key: 'day', label: 'Harian' },
+    { key: 'week', label: 'Mingguan' },
+    { key: 'month', label: 'Bulanan' }
+  ]
+
   const months = useMemo(
     () => [
       'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -170,11 +176,7 @@ const History = () => {
         <div className={styles.filterGroup}>
           <span className={styles.filterLabel}>Periode:</span>
           <div className={styles.buttonGroup}>
-            {[
-              { key: 'day', label: 'Harian' },
-              { key: 'week', label: 'Mingguan' },
-              { key: 'month', label: 'Bulanan' }
-            ].map(({ key, label }) => (
+            {selectButton.map(({ key, label }) => (
               <Button
                 key={key}
                 className={`${styles.filterButton} ${filterPeriod === key ? styles.active : ''}`}
