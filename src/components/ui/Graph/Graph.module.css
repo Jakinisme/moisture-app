@@ -1,7 +1,7 @@
   /* Graph Component Styles */
   .chartWrapper {
   width: 100%;
-  height: 20rem;           /* tinggi chart fix */
+  height: 20rem;          
 }
 
 .infoContainer {
@@ -58,12 +58,12 @@
 
 .graph {
   width: 100%;
-  height: auto;            /* auto supaya bisa nambah tinggi sesuai isi */
+  height: auto;           
   border-radius: 0.75rem;
   padding: 1.5rem;
 
   display: flex;
-  flex-direction: column;  /* chart di atas, guide di bawah */
+  flex-direction: column;
   gap: 1.5rem;
 }
 
@@ -75,16 +75,19 @@
   }
 
   .graph {
-    width: 100vw;        
-    margin-left: calc(-50vw + 50%); 
+    width: 100%;        
     padding: 0.75rem;
-    height: auto;           /* FIX: biarin auto, bukan fixed */
+    height: auto;
     border-radius: 0;    
     gap: 1rem;
   }
+  
+  .infoContainer{
+    background-color: #ffffff00;
+  }
 
   .chartWrapper {
-    height: 16rem;         /* kecilin chart biar muat di layar hp */
+    height: 16rem;      
   }
 
   .title {
