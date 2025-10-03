@@ -1,4 +1,4 @@
-import styles from '../../components/layout/Moisture/Moisture.module.css';
+import styles from './MoistureGuide.module.css';
 import  useIntersectionObserver  from '../../hooks/intersectionObserver';
 
 const MoistureGuide = () => {

@@ -1,6 +1,3 @@
-/* =========================
-   Global Layout & Reset
-   ========================= */
 
 * {
   margin: 0;
@@ -10,13 +7,13 @@
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #272727;
+  background: #bee5ff;
   color: #000000;
 }
 
 .container {
   min-height: 100svh;
-  background: #252525;
+  background: #bee5ff;
   padding: 2rem 1.5rem;
 }
 

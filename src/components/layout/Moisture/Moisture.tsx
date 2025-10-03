@@ -1,7 +1,7 @@
 import HandleMoisture from '../../../hooks/HandleMoisture';
 import Graph from '../../ui/Graph';
 import Gauge from '../../ui/Gauge';
-import MoistureGuide from '../../../constants/MoistureGuide';
+
 import StatusItem from '../../ui/StatusItem';
 
 import styles from './Moisture.module.css';
@@ -26,11 +26,6 @@ import styles from './Moisture.module.css';
     </div>
 
       <Graph data={moistureData} />
-
-    <div className={styles.infoSection}>
-      <h3 className={styles.infoTitle}>Klasifikasi Kelembapan Tanah</h3>
-      <MoistureGuide />
-    </div>
   </div>
 </div>
 

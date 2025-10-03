@@ -1,0 +1,104 @@
+/* Container grid untuk seluruh guide */
+.guideGrid {
+  display: flex;
+  flex-wrap: wrap;           /* biar item bisa turun kalau layar sempit */
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Box per item */
+.guideItem {
+  display: flex;
+  flex-direction: column;    /* tetap column: bulat → range → status */
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 120px;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.guideItem:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Warna indikator bulat */
+.guideColor {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+}
+
+.guideColorRed {
+  background: #ef4444;
+}
+
+.guideColorYellow {
+  background: #facc15;
+}
+
+.guideColorGreen {
+  background: #22c55e;
+}
+
+.guideColorBlue {
+  background: #3b82f6;
+}
+
+/* Range text */
+.guideRange {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.guideRangeRed {
+  color: #b91c1c;
+}
+
+.guideRangeYellow {
+  color: #92400e;
+}
+
+.guideRangeGreen {
+  color: #065f46;
+}
+
+.guideRangeBlue {
+  color: #1e3a8a;
+}
+
+/* Status text */
+.guideStatus {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* 🔥 Media query (opsional tweak) */
+/* Biarkan horizontal di hp, cuma atur spacing biar nggak terlalu rapat */
+@media (max-width: 640px) {
+  .guideGrid {
+    justify-content: center;   /* tengahin biar rapih */
+    gap: 0.5rem;
+  }
+
+  .guideItem {
+    flex: 1 1 100px;           /* item lebih kecil */
+    padding: 0.75rem;
+  }
+
+  .guideRange {
+    font-size: 0.8rem;
+  }
+
+  .guideStatus {
+    font-size: 0.85rem;
+  }
+}

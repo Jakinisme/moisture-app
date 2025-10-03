@@ -1,6 +1,7 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import  useIntersectionObserver  from '../../../hooks/intersectionObserver';
+import MoistureGuide from '../../../constants/MoistureGuide';
 import styles from './Graph.module.css';
 
 interface MoistureDataPoint {
@@ -34,6 +35,7 @@ export const Graph: React.FC<GraphProps> = ({
     >
       <h3 className={styles.title}>{title}</h3>
       <div className={styles.graph}>
+      <div className={styles.chartWrapper}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -69,14 +71,21 @@ export const Graph: React.FC<GraphProps> = ({
             <Line
               type="monotone"
               dataKey="moisture"
-              stroke="#181818ff"
+              stroke="#008cffff"
               strokeWidth={3}
-              dot={{ fill: "#4d4d4dff", strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: "##0059ffff", strokeWidth: 2 }}
+              dot={{ fill: "#008cffc9", strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6, stroke: "#0059ff", strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
-    </div>
-  );
-};
+    
+        <div className={styles.infoContainer}>
+          <h3 className={styles.infoTitle}>Klasifikasi Kelembapan Tanah</h3>
+          <MoistureGuide />
+        </div>
+      </div>
+    
+   </div>
+      );
+    };
