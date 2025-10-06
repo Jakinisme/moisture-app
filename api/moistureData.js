@@ -12,7 +12,7 @@ if (!admin.apps.length) {
 
 const db = admin.database();
 
-export default async function handler(req, res) {
+const handler = async (req, res) =>{
   if (req.headers['x-api-key'] !== process.env.SERVER_FIREBASE_API_KEY) {
     return res.status(401).json({ error: 'What are you doing?' });
   }
@@ -25,6 +25,8 @@ export default async function handler(req, res) {
 
   if (typeof moisture !== "number" || !["current", "daily"].includes(dataType)) {
     return res.status(400).json({ error: "Invalid payload" });
+  } else if (moisture > 70 && status !== "wet") {
+    return res.status(400).json({ error: "invalid payload" });
   }
 
   try {
@@ -53,3 +55,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Database error" });
   }
 }
+
+export default handler;
