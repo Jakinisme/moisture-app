@@ -108,7 +108,6 @@ export const HandleHistory = (
 
         if (filterPeriod === "day") {
           if (month && year) {
-            // When month and year are provided, fetch all days of that month
             const targetDate = new Date(year, month - 1, 1);
             const daysInMonth = getDaysInMonth(targetDate);
             dateStrings = Array.from({ length: daysInMonth }, (_, i) =>
@@ -116,7 +115,7 @@ export const HandleHistory = (
             );
             cacheKey = `day-${year}-${month}`;
           } else {
-            // Default to current month when month/year not provided
+            
             const today = new Date();
             const currentMonth = today.getMonth() + 1;
             const currentYear = today.getFullYear();

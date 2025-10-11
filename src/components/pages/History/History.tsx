@@ -134,25 +134,22 @@ const History = () => {
     }
   }, [dailyData, filterPeriod, selectedMonth, selectedYear, processWeeklyData, processMonthlyData]);
 
-  // Generate all months (January to December)
   const availableMonths = useMemo(() => {
     return Array.from({ length: 12 }, (_, i) => i + 1);
   }, []);
 
-  // Generate years based on available data
   const availableYears = useMemo(() => {
     const yearSet = new Set<number>();
     dailyData.forEach(item => {
       const date = new Date(item.date);
       yearSet.add(date.getFullYear());
     });
-    return Array.from(yearSet).sort((a, b) => b - a); // Sort newest to oldest
+    return Array.from(yearSet).sort((a, b) => b - a);
   }, [dailyData]);
 
-  // Auto-adjust year when data loads, but keep month selection
   useEffect(() => {
     if (availableYears.length && !availableYears.includes(selectedYear)) {
-      setSelectedYear(availableYears[0]); // Set to newest year with data
+      setSelectedYear(availableYears[0]);
     }
   }, [availableYears, selectedYear]);
 
