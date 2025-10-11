@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import Button from '../../ui/Button';
 import HandleHistory from '../../../hooks/HandleHistory';
 
@@ -134,32 +134,27 @@ const History = () => {
     }
   }, [dailyData, filterPeriod, selectedMonth, selectedYear, processWeeklyData, processMonthlyData]);
 
+  // Generate all months (January to December)
   const availableMonths = useMemo(() => {
-    const monthSet = new Set<number>();
-    dailyData.forEach(item => {
-      const date = new Date(item.date);
-      monthSet.add(date.getMonth() + 1);
-    });
-    return Array.from(monthSet).sort((a, b) => a - b);
-  }, [dailyData]);
+    return Array.from({ length: 12 }, (_, i) => i + 1);
+  }, []);
 
+  // Generate years based on available data
   const availableYears = useMemo(() => {
     const yearSet = new Set<number>();
     dailyData.forEach(item => {
       const date = new Date(item.date);
       yearSet.add(date.getFullYear());
     });
-    return Array.from(yearSet).sort((a, b) => b - a);
+    return Array.from(yearSet).sort((a, b) => b - a); // Sort newest to oldest
   }, [dailyData]);
 
+  // Auto-adjust year when data loads, but keep month selection
   useEffect(() => {
-    if (availableMonths.length && !availableMonths.includes(selectedMonth)) {
-      setSelectedMonth(availableMonths[availableMonths.length - 1]);
-    }
     if (availableYears.length && !availableYears.includes(selectedYear)) {
-      setSelectedYear(availableYears[0]);
+      setSelectedYear(availableYears[0]); // Set to newest year with data
     }
-  }, [availableMonths, availableYears, selectedMonth, selectedYear]);
+  }, [availableYears, selectedYear]);
 
   return (
     <main>
@@ -195,8 +190,8 @@ const History = () => {
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(Number(e.target.value))}
           >
-            {availableMonths.map((monthNumber, index) => (
-              <option key={monthNumber += index} value={monthNumber}>
+            {availableMonths.map((monthNumber) => (
+              <option key={monthNumber} value={monthNumber}>
                 {months[monthNumber - 1]}
               </option>
             ))}
@@ -210,8 +205,8 @@ const History = () => {
             value={selectedYear}
             onChange={(e) => setSelectedYear(Number(e.target.value))}
           >
-            {availableYears.map((year, index) => (
-              <option key={year += index} value={year}>
+            {availableYears.map((year) => (
+              <option key={year} value={year}>
                 {year}
               </option>
             ))}

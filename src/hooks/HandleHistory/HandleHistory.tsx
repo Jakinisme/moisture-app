@@ -107,14 +107,26 @@ export const HandleHistory = (
         let cacheKey = "";
 
         if (filterPeriod === "day") {
-
-          const today = new Date();
-          dateStrings = Array.from({ length: 30 }, (_, i) => {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
-            return format(date, "yyyy-MM-dd");
-          });
-          cacheKey = `day-${format(today, "yyyy-MM")}`;
+          if (month && year) {
+            // When month and year are provided, fetch all days of that month
+            const targetDate = new Date(year, month - 1, 1);
+            const daysInMonth = getDaysInMonth(targetDate);
+            dateStrings = Array.from({ length: daysInMonth }, (_, i) =>
+              format(new Date(year, month - 1, i + 1), "yyyy-MM-dd")
+            );
+            cacheKey = `day-${year}-${month}`;
+          } else {
+            // Default to current month when month/year not provided
+            const today = new Date();
+            const currentMonth = today.getMonth() + 1;
+            const currentYear = today.getFullYear();
+            const targetDate = new Date(currentYear, currentMonth - 1, 1);
+            const daysInMonth = getDaysInMonth(targetDate);
+            dateStrings = Array.from({ length: daysInMonth }, (_, i) =>
+              format(new Date(currentYear, currentMonth - 1, i + 1), "yyyy-MM-dd")
+            );
+            cacheKey = `day-${currentYear}-${currentMonth}`;
+          }
         } else if ((filterPeriod === "week" || filterPeriod === "month") && month && year) {
           const targetDate = new Date(year, month - 1, 1);
           const daysInMonth = getDaysInMonth(targetDate);
