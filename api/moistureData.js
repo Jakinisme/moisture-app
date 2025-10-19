@@ -25,7 +25,7 @@ const handler = async (req, res) =>{
 
   if (typeof moisture !== "number" || !["current", "daily"].includes(dataType)) {
     return res.status(400).json({ error: "Invalid payload" });
-  } else if (moisture > 70) {
+  } else if (moisture > 100) {
     return res.status(400).json({ error: "invalid payload" });
   }
 
