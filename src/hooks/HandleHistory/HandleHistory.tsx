@@ -15,9 +15,9 @@ const monthlyCache = new Map<string, CacheEntry>();
 const CACHE_DURATION = 5 * 60 * 1000;
 
 const getMoistureStatus = (moisture: number): MoistureStatus => {
-  if (moisture < 20) return { status: "Sangat Kering", color: "#ef4444" };
-  if (moisture < 40) return { status: "Kering", color: "#f97316" };
-  if (moisture < 60) return { status: "Baik", color: "#22c55e" };
+  if (moisture < 30) return { status: "Sangat Kering", color: "#ef4444" };
+  if (moisture < 50) return { status: "Kering", color: "#f97316" };
+  if (moisture < 80) return { status: "Baik", color: "#22c55e" };
   return { status: "Lembab", color: "#3b82f6" };
 };
 
