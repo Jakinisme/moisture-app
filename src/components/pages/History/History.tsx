@@ -255,12 +255,12 @@ const History = () => {
             <div className={styles.historyList}>
               {filteredData.map((item) => {
                 const moistureStatus = item.status || { 
-                  status: item.averageMoisture < 20 ? 'Sangat Kering' : 
-                         item.averageMoisture < 40 ? 'Kering' : 
-                         item.averageMoisture < 60 ? 'Baik' : 'Lembab',
-                  color: item.averageMoisture < 20 ? '#ef4444' : 
-                         item.averageMoisture < 40 ? '#f97316' : 
-                         item.averageMoisture < 60 ? '#22c55e' : '#3b82f6'
+                  status: item.averageMoisture < 30 ? 'Sangat Kering' : 
+                         item.averageMoisture < 50 ? 'Kering' : 
+                         item.averageMoisture < 80 ? 'Baik' : 'Lembab',
+                  color: item.averageMoisture < 30 ? '#ef4444' : 
+                         item.averageMoisture < 50 ? '#f97316' : 
+                         item.averageMoisture < 80 ? '#22c55e' : '#3b82f6'
                 };
                 
                 return (
