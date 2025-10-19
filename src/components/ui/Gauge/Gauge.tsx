@@ -11,7 +11,7 @@ interface GaugeProps {
 
 export const Gauge: React.FC<GaugeProps> = ({ 
   value, 
-  max = 70, 
+  max = 100, 
   title = "Current Moisture Level",
   size = 200 
 }) => {
@@ -28,16 +28,16 @@ export const Gauge: React.FC<GaugeProps> = ({
   const strokeDashoffset = circumference - (value / max) * circumference;
   
   const getColor = (val: number) => {
-    if (val < 20) return '#ef4444'; 
-    if (val < 40) return '#f59e0b'; 
-    if (val < 60) return '#10b981'; 
+    if (val < 30) return '#ef4444'; 
+    if (val < 50) return '#f59e0b'; 
+    if (val < 80) return '#10b981'; 
     return '#3b82f6'; 
   };
   
   const getStatus = (val: number) => {
-    if (val < 20) return 'Sangat Kering';
-    if (val < 40) return 'Kering';
-    if (val < 60) return 'Baik';
+    if (val < 30) return 'Sangat Kering';
+    if (val < 50) return 'Kering';
+    if (val < 80) return 'Baik';
     return 'Lembab';
   };
 

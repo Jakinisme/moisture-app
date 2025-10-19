@@ -54,7 +54,7 @@ export const Graph: React.FC<GraphProps> = ({
               height={60}
             />
             <YAxis
-              domain={[0, 70]}
+              domain={[0, 100]}
               tick={{ fontSize: 12 }}
               label={{ value: "Level Kelembapan", angle: -90, position: "insideCenter" }}
             />

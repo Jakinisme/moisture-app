@@ -10,28 +10,28 @@ const MoistureGuide = () => {
     const guideItem = [
     {
       item: 'Sangat Kering',
-      rangeItem: '0-19%',
+      rangeItem: '0-29%',
       color: `${styles.guideColor} ${styles.guideColorRed}`,
       range: `${styles.guideRange} ${styles.guideRangeRed}`,
       status: styles.guideStatus
     },
     {
       item: 'Kering',
-      rangeItem: '20-39%',
+      rangeItem: '30-49%',
       color: `${styles.guideColor} ${styles.guideColorYellow}`,
       range: `${styles.guideRange} ${styles.guideRangeYellow}`,
       status: styles.guideStatus
     },
     {
       item: 'Baik',
-      rangeItem: '40-59%',
+      rangeItem: '50-79%',
       color: `${styles.guideColor} ${styles.guideColorGreen}`,
       range: `${styles.guideRange} ${styles.guideRangeGreen}`,
       status: styles.guideStatus
     },
     {
       item: 'Lembab',
-      rangeItem: '60-70',
+      rangeItem: '80-100',
       color: `${styles.guideColor} ${styles.guideColorBlue}`,
       range: `${styles.guideRange} ${styles.guideRangeBlue}`,
       status: styles.guideStatus
