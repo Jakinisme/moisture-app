@@ -1,7 +1,9 @@
+import styles from './Footer.module.css';
+
 const Footer = () => {
     return (
-        <footer className="bg-gray-800 text-white py-4">
-                <p className="text-center">
+        <footer className={styles.footer}>
+                <p className={styles.content}>
                     &copy; {new Date().getFullYear()} ASTRAJINGGA.
                 </p>
         </footer>
