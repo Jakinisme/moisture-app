@@ -266,7 +266,13 @@ const History = () => {
                 return (
                   <div key={item.date} className={styles.historyItem}>
                     <div className={styles.dateInfo}>
-                      <h3 className={styles.dateTitle}>{'weekNumber' in item ? item.date : formatDate(item.date)}</h3>
+                      <h3 className={styles.dateTitle}>{
+                      filterPeriod === 'week'
+                       ? item.date
+                       : filterPeriod === 'month'
+                       ? `${months[selectedMonth - 1]} ${selectedYear}`
+                       : formatDate(item.date)
+                      }</h3>
                       <div className={styles.moistureStats}>
                         {[
                           { label: 'Rata-rata', value: item.averageMoisture },
