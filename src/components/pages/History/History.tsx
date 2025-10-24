@@ -62,7 +62,7 @@ const History = () => {
       
       const allReadings = weekDays.flatMap(day => day.readings);
       const moistureValues = allReadings.map(r => r.moisture);
-      const averageMoisture = moistureValues.reduce((sum, val) => sum + val, 0) / moistureValues.length;
+      const averageMoisture = moistureValues.reduce((sum, val) => sum + val, 0) / 7
       const minMoisture = Math.min(...moistureValues);
       const maxMoisture = Math.max(...moistureValues);
       
@@ -92,7 +92,7 @@ const History = () => {
 
     const allReadings = dailyData.flatMap(day => day.readings);
     const moistureValues = allReadings.map(r => r.moisture);
-    const averageMoisture = moistureValues.reduce((sum, val) => sum + val, 0) / moistureValues.length;
+    const averageMoisture = moistureValues.reduce((sum, val) => sum + val, 0) / 30;
     const minMoisture = Math.min(...moistureValues);
     const maxMoisture = Math.max(...moistureValues);
 
