@@ -15,7 +15,7 @@ const History = () => {
   const { dailyData, loading, errors } = HandleHistory(filterPeriod, selectedMonth, selectedYear);
 
   const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
-      threshold: 0.4,
+      threshold: 0.2,
       rootMargin: '50px'
     });
 
