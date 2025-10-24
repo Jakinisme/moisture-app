@@ -11,9 +11,9 @@ const StatusItem = () => {
 
 
   const getStatusClass = (moisture: number) => {
-    if (moisture < 20) return styles.statusBadgeVeryDry;
-    if (moisture < 40) return styles.statusBadgeDry;
-    if (moisture < 60) return styles.statusBadgeGood;
+    if (moisture < 30) return styles.statusBadgeVeryDry;
+    if (moisture < 50) return styles.statusBadgeDry;
+    if (moisture < 80) return styles.statusBadgeGood;
     return styles.statusBadgeWet;
   };
 
@@ -27,11 +27,11 @@ const StatusItem = () => {
       label: `Status Kelembapan:`,
       valueClass: `${styles.statusBadge} ${getStatusClass(currentMoisture)}`,
       value:
-        currentMoisture < 20
+        currentMoisture < 30
           ? 'Sangat Kering'
-          : currentMoisture < 40
+          : currentMoisture < 50
           ? 'Kering'
-          : currentMoisture < 60
+          : currentMoisture < 80
           ? 'Baik'
           : 'Lembab',
     },
